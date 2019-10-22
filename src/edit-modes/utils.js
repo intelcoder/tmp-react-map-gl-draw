@@ -3,6 +3,9 @@
 import type { MjolnirEvent } from 'mjolnir.js';
 import type { Feature, Position } from '@nebula.gl/edit-modes';
 
+import circle from '@turf/circle'
+import distance from '@turf/distance'
+
 import { GEOJSON_TYPE } from '../constants';
 
 export function isNumeric(val: any) {
@@ -56,6 +59,50 @@ export function findClosestPointOnLineSegment(p1: Position, p2: Position, p: Pos
   const qy = k * qx + b;
 
   return inBounds(p1, p2, [qx, qy]) ? [qx, qy] : null;
+}
+
+
+export function getCircleEditHandleCoordinate(coordinates) {
+ if(coordinates.length < 4) return []
+ const editHandleCoordinates = []
+ const points = Math.ceil(coordinates.length / 4)
+ const arr = new Array(4)
+
+ for(let i = 0; i < arr.length; i++) {
+   let targetIndex = (i * points)
+   if(coordinates[targetIndex]) {
+     editHandleCoordinates.push(coordinates[targetIndex])
+   }
+ }
+ return editHandleCoordinates
+}
+
+
+export function createCircle(
+  centerPoint: Position,
+  mapCoords: Number,
+  properties: Object = {},
+  options: Object = {}
+) {
+ const radius = Math.max(distance(centerPoint, mapCoords), 0.001);
+ let circleFeature = circle(centerPoint, radius, {
+   ...options,
+   steps: 64,
+   properties,
+ });
+
+ circleFeature.geometry.type = GEOJSON_TYPE.CIRCLE;
+ circleFeature.geometry.coordinates = circleFeature.geometry.coordinates[0];
+ return circleFeature;
+}
+
+export function updateCircleRadius(feature: Feature, mapCoords: Position) {
+   const properties = feature.properties;
+   if (!properties.centerCoordinates) {
+     return null;
+   }
+   const { centerCoordinates } = properties;
+   return createCircle(centerCoordinates, mapCoords, properties);
 }
 
 export function getFeatureCoordinates(feature: Feature) {

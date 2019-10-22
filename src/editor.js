@@ -44,6 +44,7 @@ export default class Editor extends ModeHandler {
         return `M ${pathString}`;
 
       case GEOJSON_TYPE.POLYGON:
+      case GEOJSON_TYPE.CIRCLE:
         pathString = screenCoords.map(p => `${p[0]},${p[1]}`).join('L');
         return `M ${pathString} z`;
 
@@ -292,6 +293,7 @@ export default class Editor extends ModeHandler {
     switch (renderType) {
       case RENDER_TYPE.LINE_STRING:
       case RENDER_TYPE.POLYGON:
+      case RENDER_TYPE.CIRCLE:
         const committedStyle = this._getStyleProp(featureStyle, {
           feature,
           state: RENDER_STATE.SELECTED
@@ -516,6 +518,7 @@ export default class Editor extends ModeHandler {
 
       case RENDER_TYPE.POLYGON:
       case RENDER_TYPE.RECTANGLE:
+      case RENDER_TYPE.CIRCLE:
         return this._renderPolygon(feature, index, path);
 
       default:
