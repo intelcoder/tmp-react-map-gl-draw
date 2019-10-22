@@ -51,8 +51,8 @@ export default class BaseMode {
     if (!coordinates) {
       return null;
     }
-    const isCircle = feature.geometry.type === GEOJSON_TYPE.CIRCLE;
-    if(isCircle) {
+
+    if(feature.geometry.type === GEOJSON_TYPE.CIRCLE) {
       coordinates = getCircleEditHandleCoordinate(coordinates);
     }
     return coordinates.map((coord, i) => {
