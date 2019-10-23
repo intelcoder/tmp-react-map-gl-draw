@@ -205,19 +205,18 @@ export default class EditingMode extends BaseMode {
         let updatedFeature = data.replaceGeometry(featureIndex, geometry).getObject();
         // update circle center point
         // need to add replaceProperties in nebula.gl
-      if(feature.geometry.type === GEOJSON_TYPE.CIRCLE) {
-        const centerCoordinates = feature.properties.centerCoordinates;
-        const pixels = viewport && viewport.project(centerCoordinates);
-        if (pixels) {
-          pixels[0] += dx;
-          pixels[1] += dy;
-          updatedFeature.features[featureIndex].properties.centerCoordinates =
-            viewport && viewport.unproject(pixels);
-          return updatedFeature;
+        if(feature.geometry.type === GEOJSON_TYPE.CIRCLE) {
+          const centerCoordinates = feature.properties.centerCoordinates;
+          const pixels = viewport && viewport.project(centerCoordinates);
+          if (pixels) {
+            pixels[0] += dx;
+            pixels[1] += dy;
+            updatedFeature.features[featureIndex].properties.centerCoordinates =
+              viewport && viewport.unproject(pixels);
+          }
         }
-      }
 
-return updatedFeature;
+        return updatedFeature;
       case 'rectangle':
         // moved editHandleIndex and destination mapCoords
         newCoordinates = updateRectanglePosition(

@@ -11,7 +11,7 @@ import { getFeatureCoordinates, createCircle } from './utils';
 export default class DrawCircleMode extends BaseMode {
   handlePointerMove = (event: PointerMoveEvent, props: ModeProps<FeatureCollection> ) => {
     let tentativeFeature = this.getTentativeFeature();
-    const clickSequence = this.getClickSequence()
+    const clickSequence = this._clickSequence;
 
     if(clickSequence.length < 1) {
       return null

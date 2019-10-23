@@ -16,7 +16,8 @@ import {
   DrawPointMode,
   DrawLineStringMode,
   DrawRectangleMode,
-  DrawPolygonMode
+  DrawPolygonMode,
+  DrawCircleMode,
 } from './edit-modes';
 
 const MODE_TO_HANDLER = Object.freeze({
@@ -26,7 +27,8 @@ const MODE_TO_HANDLER = Object.freeze({
   [MODES.DRAW_POINT]: DrawPointMode,
   [MODES.DRAW_PATH]: DrawLineStringMode,
   [MODES.DRAW_RECTANGLE]: DrawRectangleMode,
-  [MODES.DRAW_POLYGON]: DrawPolygonMode
+  [MODES.DRAW_POLYGON]: DrawPolygonMode,
+  [MODES.DRAW_CIRCLE]: DrawCircleMode
 });
 
 const defaultProps = {
@@ -369,11 +371,11 @@ export default class ModeHandler extends PureComponent<EditorProps, EditorState>
       pointerDownScreenCoords,
       pointerDownMapCoords
     };
-
-    if (this.state.didDrag) {
+    // how to fire pointerMove event properly for circle
+    // if (this.state.didDrag) {
       const modeProps = this.getModeProps();
       this._modeHandler.handlePointerMove(pointerMoveEvent, modeProps);
-    }
+    // }
 
     this.setState({
       hovered,
