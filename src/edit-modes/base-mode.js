@@ -11,7 +11,7 @@ import type {
 import type { ModeProps } from '../types';
 
 import { GEOJSON_TYPE, GUIDE_TYPE } from '../constants';
-import { getFeatureCoordinates, isNumeric } from './utils';
+import { getFeatureCoordinates, getCircleEditHandleCoordinate, isNumeric } from './utils';
 
 export default class BaseMode {
   _tentativeFeature: ?Feature;
@@ -20,6 +20,7 @@ export default class BaseMode {
   constructor() {
     this._tentativeFeature = null;
     this._editHandles = null;
+    this._clickSequence = [];
   }
 
   handleClick(event: ClickEvent, props: ModeProps<FeatureCollection>) {}
@@ -45,9 +46,14 @@ export default class BaseMode {
   };
 
   getEditHandlesFromFeature(feature: Feature, featureIndex: ?number) {
-    const coordinates = getFeatureCoordinates(feature);
+    const renderType = feature.properties.renderType
+    let coordinates = getFeatureCoordinates(feature);
     if (!coordinates) {
       return null;
+    }
+
+    if(feature.geometry.type === GEOJSON_TYPE.CIRCLE) {
+      coordinates = getCircleEditHandleCoordinate(coordinates);
     }
     return coordinates.map((coord, i) => {
       return {

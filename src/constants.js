@@ -7,27 +7,31 @@ export const MODES = {
   DRAW_POINT: 'DRAW_POINT',
   DRAW_PATH: 'DRAW_PATH',
   DRAW_POLYGON: 'DRAW_POLYGON',
-  DRAW_RECTANGLE: 'DRAW_RECTANGLE'
+  DRAW_RECTANGLE: 'DRAW_RECTANGLE',
+  DRAW_CIRCLE: 'DRAW_CIRCLE'
 };
 
 export const DRAWING_MODE = [
   MODES.DRAW_POINT,
   MODES.DRAW_PATH,
   MODES.DRAW_POLYGON,
-  MODES.DRAW_RECTANGLE
+  MODES.DRAW_RECTANGLE,
+  MODES.DRAW_CIRCLE
 ];
 
 export const GEOJSON_TYPE = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
-  POLYGON: 'Polygon'
+  POLYGON: 'Polygon',
+  CIRCLE: 'Circle'
 };
 
 export const RENDER_TYPE = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
   POLYGON: 'Polygon',
-  RECTANGLE: 'Rectangle'
+  RECTANGLE: 'Rectangle',
+  CIRCLE: 'Circle',
 };
 
 export const RENDER_STATE = {

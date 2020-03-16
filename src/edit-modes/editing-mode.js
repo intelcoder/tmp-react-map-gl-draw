@@ -16,7 +16,9 @@ import {
   findClosestPointOnLineSegment,
   getFeatureCoordinates,
   isNumeric,
-  updateRectanglePosition
+  updateRectanglePosition,
+  updateCircleRadius,
+  createCircle
 } from './utils';
 
 export default class EditingMode extends BaseMode {
@@ -118,10 +120,14 @@ export default class EditingMode extends BaseMode {
       case ELEMENT_TYPE.EDIT_HANDLE:
         // dragging editHandle
         // dragging rectangle or other shapes
-        const updateType =
-          selectedFeature.properties.renderType === RENDER_TYPE.RECTANGLE
-            ? 'rectangle'
-            : 'editHandle';
+        const renderType = selectedFeature.properties.renderType;
+        let updateType = 'editHandle';
+        if(renderType === RENDER_TYPE.RECTANGLE) {
+          updateType = 'rectangle';
+        } else if (renderType === RENDER_TYPE.CIRCLE) {
+          updateType = 'circle';
+        }
+
         updatedData = this._updateFeature(props, updateType, {
           editHandleIndex,
           mapCoords: event.mapCoords
@@ -196,8 +202,21 @@ export default class EditingMode extends BaseMode {
             feature.geometry.type === GEOJSON_TYPE.POLYGON ? [newCoordinates] : newCoordinates
         };
 
-        return data.replaceGeometry(featureIndex, geometry).getObject();
+        let updatedFeature = data.replaceGeometry(featureIndex, geometry).getObject();
+        // update circle center point
+        // need to add replaceProperties in nebula.gl
+        if(feature.geometry.type === GEOJSON_TYPE.CIRCLE) {
+          const centerCoordinates = feature.properties.centerCoordinates;
+          const pixels = viewport && viewport.project(centerCoordinates);
+          if (pixels) {
+            pixels[0] += dx;
+            pixels[1] += dy;
+            updatedFeature.features[featureIndex].properties.centerCoordinates =
+              viewport && viewport.unproject(pixels);
+          }
+        }
 
+        return updatedFeature;
       case 'rectangle':
         // moved editHandleIndex and destination mapCoords
         newCoordinates = updateRectanglePosition(
@@ -212,6 +231,16 @@ export default class EditingMode extends BaseMode {
         };
 
         return data.replaceGeometry(featureIndex, geometry).getObject();
+        case 'circle':
+          const newCircle = updateCircleRadius(
+            feature,
+            options.mapCoords
+          )
+          geometry = {
+            type: GEOJSON_TYPE.CIRCLE,
+            coordinates: getFeatureCoordinates(newCircle)
+          };
+          return data.replaceGeometry(featureIndex, geometry).getObject();
 
       default:
         return data && data.getObject();

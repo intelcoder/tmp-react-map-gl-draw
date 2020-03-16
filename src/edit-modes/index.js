@@ -5,3 +5,4 @@ export { default as DrawPointMode } from './draw-point-mode';
 export { default as DrawLineStringMode } from './draw-line-string-mode';
 export { default as DrawRectangleMode } from './draw-rectangle-mode';
 export { default as DrawPolygonMode } from './draw-polygon-mode';
+export { default as DrawCircleMode } from './draw-circle-mode';
